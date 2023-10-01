@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.4 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.27 FATAL_ERROR)
 
 PROJECT(sioclient
     VERSION 3.1.0
@@ -25,6 +25,10 @@ if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
     # since it calls enable_testing, which must be in the
     # main CMakeLists.
     include(CTest)
+endif()
+
+if(MSVC)
+        set(CMAKE_DEBUG_POSTFIX "d")
 endif()
 
 add_definitions(
@@ -136,23 +140,23 @@ install(TARGETS ${TARGET_LIBRARIES} EXPORT sioclientTargets
 
 # === generate a CMake Config File ===
 include(CMakePackageConfigHelpers)
-set(ConfigPackageLocation ${CMAKE_INSTALL_LIBDIR}/cmake/sioclient)
+set(ConfigPackageLocation ${CMAKE_INSTALL_PREFIX}/)
 string(REGEX REPLACE "([^;]+)" "find_dependency(\\1)" _find_dependency_calls "${_package_dependencies}")
 string(REPLACE ";" "\n" _find_dependency_calls "${_find_dependency_calls}")
 
 write_basic_package_version_file(
-    "${CMAKE_CURRENT_BINARY_DIR}/sioclient/sioclientConfigVersion.cmake"
+    "${CMAKE_INSTALL_PREFIX}/sioclientConfigVersion.cmake"
     VERSION ${sioclient_VERSION}
     COMPATIBILITY AnyNewerVersion
 )
 
 export(EXPORT sioclientTargets
-    FILE "${CMAKE_CURRENT_BINARY_DIR}/sioclient/sioclientTargets.cmake"
+    FILE "${CMAKE_INSTALL_PREFIX}/sioclientTargets.cmake"
     NAMESPACE sioclient::
 )
 
 configure_package_config_file(sioclientConfig.cmake.in
-    "${CMAKE_CURRENT_BINARY_DIR}/sioclient/sioclientConfig.cmake"
+    "${CMAKE_INSTALL_PREFIX}/sioclientConfig.cmake"
     INSTALL_DESTINATION "${ConfigPackageLocation}"
 )
 
@@ -164,9 +168,9 @@ install(EXPORT sioclientTargets
 )
 install(
     FILES
-    "${CMAKE_CURRENT_BINARY_DIR}/sioclient/sioclientConfig.cmake"
-    "${CMAKE_CURRENT_BINARY_DIR}/sioclient/sioclientConfigVersion.cmake"
-    "${CMAKE_CURRENT_BINARY_DIR}/sioclient/sioclientTargets.cmake"
+    "${CMAKE_INSTALL_PREFIX}/sioclientConfig.cmake"
+    "${CMAKE_INSTALL_PREFIX}/sioclientConfigVersion.cmake"
+    "${CMAKE_INSTALL_PREFIX}/sioclientTargets.cmake"
     DESTINATION
     ${ConfigPackageLocation}
 )
