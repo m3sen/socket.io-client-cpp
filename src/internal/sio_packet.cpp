@@ -482,7 +482,7 @@ namespace sio
                     break;
                 }
             }
-            else if(packet::is_binary_message(payload) || (m_partial_packet && !isdigit(payload[0]))) // patch for issue 299, refer to https://github.com/socketio/socket.io-client-cpp/issues/299
+            else if(packet::is_binary_message(payload) || (m_partial_packet)) // && !isdigit(payload[0]))) // patch for issue 299, refer to https://github.com/socketio/socket.io-client-cpp/issues/299
             {
                 if(m_partial_packet)
                 {
